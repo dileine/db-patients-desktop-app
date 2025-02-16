@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
     <title>Gestión de Pacientes</title>
-
-</head>
-<body>
-    <h1>Gestión de pacientes</h1>
-    <h2>Buscar paciente</h2>
-    <input type="text" id="patientName" placeholder="Introduce el nombre del paciente">
-    <button id="seacrhBttn">Buscar</button>
-
-    <div id="result"></div>
-    
+  </head>
+  <body>
+    <div class="container">
+      <h1>Buscar paciente</h1>
+      <input
+        type="text"
+        id="patientName"
+        placeholder="Introduce el nombre del paciente"
+      />
+      <select id="insurance">
+        <option value="">Selecciona una mutua</option>
+        <option value="Adeslas">Adeslas</option>
+        <option value="Asisa">Asisa</option>
+        <option value="DKV">DKV</option>
+        <option value="Sanitas">Sanitas</option>
+        <option value="Mapfre">Mapfre</option>
+      </select>
+      <button id="searchBttn">Buscar</button>
+      <div id="result"></div>
+    </div>
     <script src="renderer.js"></script>
-</body>
+  </body>
 </html>
