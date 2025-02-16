@@ -1,5 +1,6 @@
 document.getElementById("searchBttn").addEventListener("click", async () => {
   const name = document.getElementById("patientName").value;
+  const insurance = document.getElementById("insurance").value;
   console.log(`Buscando paciente: ${name}`);
 
   const response = await fetch("http://localhost:3000/search", {
@@ -9,6 +10,7 @@ document.getElementById("searchBttn").addEventListener("click", async () => {
   });
 
   const data = await response.json();
+  console.log("Respuesta del servidor:", data);
   const result = document.getElementById("result");
 
   if (data.exist) {
@@ -24,7 +26,7 @@ document.getElementById("searchBttn").addEventListener("click", async () => {
     <h3>Paciente no encontrado</h3>
     <form id="createPatient">
     <input type="text" id="newName" placeholder=${name} required>
-    <input type="text" id="newInsurance" placeholder="Mutua">
+    <input type="text" id="newInsurance" placeholder=${insurance || ""}>
     <button type="submit">Crear</button>
     </form>`;
 
@@ -34,6 +36,8 @@ document.getElementById("searchBttn").addEventListener("click", async () => {
         e.preventDefault();
         const newName = document.getElementById("newName").value;
         const newInsurance = document.getElementById("newInsurance").value;
+
+        console.log("Creando paciente:", newName, newInsurance);
 
         await fetch("http://localhost:3000/create", {
           method: "POST",
