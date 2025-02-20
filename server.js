@@ -10,7 +10,7 @@ const dbConfig = {
   user: "user_name",
   password: "password",
   server: "localhost",
-  database: "db_name",
+  database: "pacientes",
   options: {
     encrypt: false, // true for Windows Azure
     trustServerCertificate: true,
@@ -27,51 +27,88 @@ async function getPool() {
   }
 }
 
-// Search for a patient by name
+// Search for a patient
 app.post("/search", async (req, res) => {
-  const { name } = req.body;
+  const { name, insurance } = req.body;
   try {
     const pool = await getPool();
     const result = await pool
       .request()
       .input("name", sql.VarChar, name)
-      .query("SELECT * FROM Patients WHERE name LIKE '%' + @name + '%' ");
+      .input("insurance", sql.VarChar, insurance)
+      .query(
+        "SELECT * FROM Pacientes WHERE nombre LIKE '%' + @name + '%' OR apellido LIKE '%' + @name + '%' OR codMutua = @insurance + '%'"
+      );
 
-    res.json({ exist: result.recordset.length > 0, patient: result.recordset });
+    res.json({
+      exist: result.recordset.length > 0,
+      patient: result.recordset,
+    });
   } catch (error) {
     console.error("Error al buscar paciente", error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Search for a patient by ID
 app.post("/searchById", async (req, res) => {
-  const { id } = req.body;
+  const { codigo } = req.body;
   try {
     const pool = await getPool();
     const result = await pool
       .request()
-      .input("id", sql.Int, id)
-      .query("SELECT * FROM Patients WHERE id = @id");
+      .input("codigo", sql.Int, codigo)
+      .query("SELECT * FROM pacientes WHERE codigo = @codigo");
 
-    res.json({ exist: result.recordset.length > 0, patient: result.recordset });
+    res.json({
+      exist: result.recordset.length > 0,
+      patient: result.recordset,
+    });
   } catch (error) {
     console.error("Error al buscar paciente", error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Create a new patient
+// Create a patient
 app.post("/create", async (req, res) => {
-  const { name, insurance } = req.body;
+  const {
+    nombre,
+    apellido,
+    codMutua,
+    codDoctor,
+    dni,
+    numHist,
+    fechaNac,
+    direccion,
+    poblacion,
+    cp,
+    telefono,
+    telefono2,
+    movil,
+    movil2,
+    email,
+  } = req.body;
   try {
     const pool = await getPool();
     await pool
       .request()
-      .input("name", sql.VarChar, name)
-      .input("insurance", sql.VarChar, insurance || null)
+      .input("nombre", sql.VarChar, nombre)
+      .input("apellido", sql.VarChar, apellido)
+      .input("codMutua", sql.Int, codMutua)
+      .input("codDoctor", sql.Int, codDoctor)
+      .input("dni", sql.VarChar, dni)
+      .input("numHist", sql.VarChar, numHist)
+      .input("fechaNac", sql.Date, fechaNac)
+      .input("direccion", sql.VarChar, direccion)
+      .input("poblacion", sql.VarChar, poblacion)
+      .input("cp", sql.VarChar, cp)
+      .input("telefono", sql.VarChar, telefono)
+      .input("telefono2", sql.VarChar, telefono2)
+      .input("movil", sql.VarChar, movil)
+      .input("movil2", sql.VarChar, movil2)
+      .input("email", sql.VarChar, email)
       .query(
-        "INSERT INTO Patients (name, insurance) VALUES (@name, @insurance)"
+        "INSERT INTO pacientes (nombre, apellido, codMutua, codDoctor, dni, numHist, fechaNac, direccion, poblacion, cp, telefono, telefono2, movil, movil2, email) VALUES (@nombre, @apellido, @codMutua, @codDoctor, @dni, @numHist, @fechaNac, @direccion, @poblacion, @cp, @telefono, @telefono2, @movil, @movil2, @email)"
       );
 
     res.json({ mensaje: "Paciente creado correctamente" });
@@ -83,19 +120,49 @@ app.post("/create", async (req, res) => {
 
 // Update a patient
 app.put("/update", async (req, res) => {
-  const { id, name, insurance } = req.body;
+  const {
+    codigo,
+    nombre,
+    apellido,
+    codMutua,
+    codDoctor,
+    dni,
+    numHist,
+    fechaNac,
+    direccion,
+    poblacion,
+    cp,
+    telefono,
+    telefono2,
+    movil,
+    movil2,
+    email,
+  } = req.body;
   try {
     const pool = await getPool();
-    await pool
+    const result = await pool
       .request()
-      .input("id", sql.Int, id)
-      .input("name", sql.VarChar, name)
-      .input("insurance", sql.VarChar, insurance || null)
+      .input("codigo", sql.Int, codigo)
+      .input("nombre", sql.VarChar, nombre)
+      .input("apellido", sql.VarChar, apellido)
+      .input("codMutua", sql.Int, codMutua)
+      .input("codDoctor", sql.Int, codDoctor)
+      .input("dni", sql.VarChar, dni)
+      .input("numHist", sql.VarChar, numHist)
+      .input("fechaNac", sql.Date, fechaNac)
+      .input("direccion", sql.VarChar, direccion)
+      .input("poblacion", sql.VarChar, poblacion)
+      .input("cp", sql.VarChar, cp)
+      .input("telefono", sql.VarChar, telefono)
+      .input("telefono2", sql.VarChar, telefono2)
+      .input("movil", sql.VarChar, movil)
+      .input("movil2", sql.VarChar, movil2)
+      .input("email", sql.VarChar, email)
       .query(
-        "UPDATE Patients SET name = @name, insurance = @insurance WHERE id = @id"
+        "UPDATE pacientes SET nombre = @nombre, apellido = @apellido, codMutua = @codMutua, codDoctor = @codDoctor, dni = @dni, numHist = @numHist, fechaNac = @fechaNac, direccion = @direccion, poblacion = @poblacion, cp = @cp, telefono = @telefono, telefono2 = @telefono2, movil = @movil, movil2 = @movil2, email = @email WHERE codigo = @codigo"
       );
 
-    if (result.rosAffected[0] > 0) {
+    if (result.rowsAffected[0] > 0) {
       res.json({ mensaje: "Paciente actualizado correctamente" });
     } else {
       res.status(404).json({ error: "Paciente no encontrado" });
@@ -108,13 +175,14 @@ app.put("/update", async (req, res) => {
 
 // Delete a patient
 app.delete("/delete", async (req, res) => {
-  const { id } = req.body;
+  const { codigo } = req.body;
   try {
     const pool = await getPool();
-    await pool
+    const result = await pool
       .request()
-      .input("id", sql.Int, id)
-      .query("DELETE FROM Patients WHERE id = @id");
+      .input("codigo", sql.Int, codigo)
+      .query("DELETE FROM pacientes WHERE codigo = @codigo");
+
     if (result.rowsAffected[0] === 0) {
       return res.status(404).json({ mensaje: "Paciente no encontrado" });
     }
