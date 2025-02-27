@@ -49,7 +49,6 @@ document.getElementById("searchBttn").addEventListener("click", async () => {
       .getElementById("createPatient")
       .addEventListener("submit", async (e) => {
         e.preventDefault();
-
         // Get form values
         const newName = document.getElementById("newName").value;
         const newLastname = document.getElementById("newLastname").value;
@@ -123,6 +122,7 @@ document.getElementById("searchBttn").addEventListener("click", async () => {
 
         <button onclick="editPatient(${data.codigo})">Editar</button>
         <button onclick="deletePatient(${data.codigo})">Eliminar</button>
+        <button onclick="location.reload()">Volver a buscar</button>
         `;
       });
   }
