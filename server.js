@@ -12,7 +12,7 @@ const dbConfig = {
   server: "localhost",
   database: "pacientes",
   options: {
-    encrypt: false, // true for Windows Azure
+    encrypt: false,
     trustServerCertificate: true,
   },
 };

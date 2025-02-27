@@ -41,7 +41,6 @@ document.getElementById("searchBttn").addEventListener("click", async () => {
     <input type="tel" id="newMobile" placeholder="Móvil">
     <input type="tel" id="newMobile2" placeholder="Móvil 2">
     <input type="email" id="newEmail" placeholder="Correo electrónico">
-    <input type="text" id="newAddress" placeholder="Dirección">
     <button type="submit">Crear</button>
     </form>`;
 
@@ -129,7 +128,7 @@ document.getElementById("searchBttn").addEventListener("click", async () => {
 });
 
 async function editPatient(codigo) {
-  const response = await fetch("http://localhost:300/search", {
+  const response = await fetch("http://localhost:3000/search", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ codigo }),
@@ -202,6 +201,7 @@ async function updatePatient(codigo) {
   });
 
   alert("Paciente actualizado correctamente");
+  location.reload();
 }
 
 async function deletePatient(codigo) {
@@ -217,11 +217,6 @@ async function deletePatient(codigo) {
   });
 
   const data = await response.json();
-
-  if (response.ok) {
-    alert(data.mensaje);
-    result.innerHTML = ""; // Clear the result div
-  } else {
-    alert(data.error);
-  }
+  alert(response.ok ? data.mensaje : data.error);
+  location.reload();
 }
