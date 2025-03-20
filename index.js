@@ -6,11 +6,10 @@ function createWindow() {
     height: 800,
     webPreferences: {
       nodeIntegration: true,
-      webSecurity: false,
     },
   });
 
-  window.loadFile("index.html");
+  window.loadFile("frontend/public/index.html");
 }
 
 app.whenReady().then(createWindow);
